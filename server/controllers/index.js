@@ -11,21 +11,27 @@ module.exports = {
 
     // a function which handles a get request for all messages
     post: function (req, res) {
+      console.log('xxxxxxxx',req.body);
       models.messages.post(req.body).then(function(results) {
-        res.send(results);
+        res.end();
       });
     } // a function which handles posting a message to the database
   },
 
   users: {
-    // Ditto as above
     get: function (req, res) {
-      console.log(req.body);
-    },
+      models.users.get().then(function(results) {
+        res.send({results: results});
+      });
+    }, 
+
+    // a function which handles a get request for all messages
     post: function (req, res) {
-      console.log(req.body);
-      models.users.post(req.body);
-    }
+      console.log('xxxxxxxx',req.body);
+      models.users.post(req.body).then(function(results) {
+        res.end();
+      });
+    } 
   }
 };
 

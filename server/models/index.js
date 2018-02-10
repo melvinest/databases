@@ -4,6 +4,7 @@ var queryAsync = function(query) {
   // console.log(query);
   var promise = new Promise(function(resolve, reject) {
     db.dbConnection.query(query, function(error, results, fields) {
+      console.log(error);
       resolve(results);
       reject(error);
     });
@@ -25,7 +26,7 @@ module.exports = {
     // a function which produces all the messages
     post: function (body) {
       var query = "INSERT INTO messages (username, text, roomname)\
-        VALUES ('" + body.username + "', '" + body.text + "', '" + body.roomname + "')";
+        VALUES ('" + escapeQuote(body.username) + "', '" + escapeQuote(body.text) + "', '" + escapeQuote(body.roomname) + "')";
       return queryAsync(query).then(function(results) {
         return new Promise(function(resolve, reject) {
           resolve(results);
@@ -37,25 +38,29 @@ module.exports = {
 
   users: {
     // Ditto as above.
-    get: function () {},
+    get: function () {
+      var query = 'SELECT * FROM users ORDER BY objectId DESC LIMIT 100 ';
+      return queryAsync(query).then(function(results) {
+        return new Promise(function(resolve, reject) {
+          resolve(results);
+        });
+      });
+    }, 
+
+    // a function which produces all the messages
     post: function (body) {
-      var query = 'INSERT INTO users (username) VALUES (\'' + body.username + '\')';
-      db.dbConnection.query(query, function(error, results, fields) {
-        if (error) {
-          console.log(error);
-          throw error;
-        }
+      var query = "INSERT INTO users (username)\
+        VALUES ('" + body.username + "')";
+      return queryAsync(query).then(function(results) {
+        return new Promise(function(resolve, reject) {
+          resolve(results);
+        });
       });
-
-      db.dbConnection.query('SELECT * FROM users ORDER BY id DESC LIMIT 100 ', function(error, results, fields) {
-        if (error) {
-          console.log(error);
-          throw error;
-        }
-        console.log(results);
-      });
-
-    }
+    } 
   }
 };
+
+var escapeQuote = function(string) {
+  return string.replace("'", "''");
+}
 
