@@ -10,6 +10,7 @@ var parser = require('body-parser');
 var router = require('./routes.js');
 
 var app = express();
+app.use(cors());
 module.exports.app = app;
 
 // Set what we are listening on.
@@ -18,11 +19,13 @@ app.set('port', 3000);
 // Logging and parsing
 app.use(morgan('dev'));
 app.use(parser.json());
+app.use(parser.urlencoded({ extended: false }));
 
 // Set up our routes
 app.use('/classes', router);
 
-app.use(cors());
+
+
 
 // Serve the client files
 app.use(express.static(__dirname + '/../client'));
@@ -33,7 +36,7 @@ if (!module.parent) {
   console.log('Listening on', app.get('port'));
 }
 
-// db.dbConnection.connect();
+db.dbConnection.connect();
 // var query = 'INSERT INTO messages (text) VALUES (\'hello world\')';
 // // var query = 'DESCRIBE rooms';
 // // DESCRIBE rooms;
