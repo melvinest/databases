@@ -1,5 +1,6 @@
 var express = require('express');
 var db = require('./db');
+var cors = require('cors');
 
 // Middleware
 var morgan = require('morgan');
@@ -21,6 +22,8 @@ app.use(parser.json());
 // Set up our routes
 app.use('/classes', router);
 
+app.use(cors());
+
 // Serve the client files
 app.use(express.static(__dirname + '/../client'));
 
@@ -29,4 +32,19 @@ if (!module.parent) {
   app.listen(app.get('port'));
   console.log('Listening on', app.get('port'));
 }
+
+// db.dbConnection.connect();
+// var query = 'INSERT INTO messages (text) VALUES (\'hello world\')';
+// // var query = 'DESCRIBE rooms';
+// // DESCRIBE rooms;
+// // DESCRIBE messages;
+// db.dbConnection.query(query, function(e, r, f) {
+//   if (e) {
+//     console.log(e);
+//   }
+
+//   console.log(r);
+//   // console.log('XXXXXXXXXXXXXXXX');
+//   // console.log(f);
+// });
 
